@@ -35,7 +35,18 @@ const subscriptionSchema = new mongoose.Schema(
         "finance",
         "politics",
         "other"
-      ]
+      ],
+      required: true
+    },
+    paymentMethod: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    status: {
+      type: String,
+      enum: ["active", "cancelled", "expired"],
+      default: "active"
     }
   },
   { timestamps: true }
