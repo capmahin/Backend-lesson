@@ -19,6 +19,23 @@ const subscriptionSchema = new mongoose.Schema(
       type: String,
       enum: ["USD", "EUR", "GBP"],
       default: "USD"
+    },
+    frequency: {
+      type: String,
+      enum: ["daily", "weekly", "monthly", "yearly"]
+    },
+    category: {
+      type: String,
+      enum: [
+        "sports",
+        "news",
+        "entertainment",
+        "lifestyle",
+        "technology",
+        "finance",
+        "politics",
+        "other"
+      ]
     }
   },
   { timestamps: true }
