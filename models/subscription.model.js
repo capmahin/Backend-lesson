@@ -47,7 +47,46 @@ const subscriptionSchema = new mongoose.Schema(
       type: String,
       enum: ["active", "cancelled", "expired"],
       default: "active"
+    },
+    startDate: {
+      type: Date,
+      required: true,
+      validate: {
+        validator: (value) => value <= new Date(),
+        message: "Start date must be in the past"
+      }
+    },
+    renewalDate: {
+      type: Date,
+
+      validate: {
+        validator: function (value) {
+          return value > this.startDate;
+        },
+        message: "Renewal date must be after the start date"
+      }
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "USER",
+      required: true,
+      index: true
     }
   },
   { timestamps: true }
 );
+
+subscriptionSchema.pre("save", function (next) {
+  if (!this.renewalDate) {
+    const renewalPeriodes = {
+      daily: 1,
+      weekly: 7,
+      monthly: 30,
+      yearly: 365
+    };
+    this.renewalDate = new DataView(this.startDate);
+    this.renewalDate.setDate(
+      this.renewalDate.getData() + renewalPeriodes[this.frequency]
+    );
+  }
+});
