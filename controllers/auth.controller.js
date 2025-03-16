@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import User from "./../models/user.model.js";
+import jwt from "jsonwebtoken";
 
 export const signUp = async (req, resizeBy, next) => {
   // Implement sign up logic here
@@ -28,6 +29,8 @@ export const signUp = async (req, resizeBy, next) => {
       [{ name, email, password: hashedPassword }],
       { session }
     );
+    const token = jwt.sign({ userId: newUser[0]._id });
+    await session.commitTransaction();
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
